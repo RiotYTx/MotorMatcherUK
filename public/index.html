@@ -62,6 +62,24 @@
       <input type="number" id="mileage" class="w-full border p-2 rounded" placeholder="e.g. 60000" />
     </div>
 
+    <!-- Tax Filter -->
+    <div class="mb-4">
+      <label for="tax" class="block mb-1">Maximum Tax (£)</label>
+      <input type="number" id="tax" class="w-full border p-2 rounded" placeholder="e.g. 300" />
+    </div>
+
+    <!-- MPG Filter -->
+    <div class="mb-4">
+      <label for="mpg" class="block mb-1">Minimum MPG</label>
+      <input type="number" id="mpg" class="w-full border p-2 rounded" placeholder="e.g. 30" />
+    </div>
+
+    <!-- Engine Size Filter -->
+    <div class="mb-4">
+      <label for="engineSize" class="block mb-1">Maximum Engine Size (L)</label>
+      <input type="number" id="engineSize" class="w-full border p-2 rounded" placeholder="e.g. 3" />
+    </div>
+
     <!-- Buttons -->
     <div class="flex gap-4 mt-4">
       <button onclick="findMyCar()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full">
@@ -77,12 +95,15 @@
   </div>
 
   <script>
-    function findMyCar() {
+    const findMyCar = () => {
       const model = document.getElementById("model").value;
       const transmission = document.getElementById("transmission").value;
       const fuel = document.getElementById("fuel").value;
       const price = document.getElementById("price").value;
       const mileage = document.getElementById("mileage").value;
+      const tax = document.getElementById("tax").value;
+      const mpg = document.getElementById("mpg").value;
+      const engineSize = document.getElementById("engineSize").value;
 
       if (!model) return alert("Please select a brand");
 
@@ -90,8 +111,11 @@
         model,
         ...(transmission && { transmission }),
         ...(fuel && { fuel }),
-        ...(price && { price }),
-        ...(mileage && { mileage }),
+        ...(price && { price: parseFloat(price) }),
+        ...(mileage && { mileage: parseFloat(mileage) }),
+        ...(tax && { tax: parseFloat(tax) }),
+        ...(mpg && { mpg: parseFloat(mpg) }),
+        ...(engineSize && { engineSize: parseFloat(engineSize) }),
       });
 
       fetch(`/cars?${query}`)
@@ -104,7 +128,7 @@
             results.innerHTML = data.map(car => `
               <div class="border p-4 rounded bg-gray-100">
                 <strong>${car.model}</strong> - £${car.price}<br/>
-                ${car.year} | ${car.transmission} | ${car.fuelType} | ${car.mileage} miles
+                ${car.year} | ${car.transmission} | ${car.fuelType} | ${car.mileage} miles | £${car.tax} tax | ${car.mpg} MPG | ${car.engineSize}L
               </div>
             `).join("");
           }
@@ -115,16 +139,21 @@
         });
     }
 
-    function resetFilters() {
+    const resetFilters = () => {
       document.getElementById("model").value = "";
       document.getElementById("transmission").value = "";
       document.getElementById("fuel").value = "";
       document.getElementById("price").value = "";
       document.getElementById("mileage").value = "";
+      document.getElementById("tax").value = "";
+      document.getElementById("mpg").value = "";
+      document.getElementById("engineSize").value = "";
       document.getElementById("results").innerHTML = "";
     }
   </script>
 </body>
 </html>
+
+
 
 

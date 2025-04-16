@@ -8,24 +8,20 @@ const port = 3000;
 
 app.use(express.static("public"));
 
-// Utility function to sanitize and parse price/mileage
-const parsePrice = (price) => {
-  if (price) {
-    return parseFloat(price.replace(/[^0-9.-]+/g, "")); // Removes currency symbols, commas
-  }
-  return NaN; // Return NaN if no price provided
-};
-
-const parseMileage = (mileage) => {
-  return parseFloat(mileage) || 0; // Convert to a number, fallback to 0
+const parseNumber = (value) => {
+  if (!value) return NaN;
+  return parseFloat(value.toString().replace(/[^0-9.]/g, "")) || NaN;
 };
 
 app.get("/cars", async (req, res) => {
   const brand = req.query.model;
-  const transmission = req.query.transmission;
-  const fuel = req.query.fuel;
-  const price = req.query.price;
-  const mileage = req.query.mileage;
+  const transmissionFilter = req.query.transmission?.toLowerCase();
+  const fuelFilter = req.query.fuel?.toLowerCase();
+  const maxPrice = parseNumber(req.query.price);
+  const maxMileage = parseNumber(req.query.mileage);
+  const maxTax = parseNumber(req.query.tax);
+  const minMpg = parseNumber(req.query.mpg);
+  const maxEngineSize = parseNumber(req.query.engineSize);
 
   if (!brand) {
     return res.status(400).json({ error: "Model (brand) is required" });
@@ -37,38 +33,32 @@ app.get("/cars", async (req, res) => {
   }
 
   const results = [];
-  console.log('Request received with parameters:', req.query);
 
   fs.createReadStream(filePath)
     .pipe(csvParser())
-    .on("data", (data) => {
-      // Parse car data
-      const carPrice = parsePrice(data.price); // Sanitize and parse price
-      const carMileage = parseMileage(data.mileage); // Sanitize and parse mileage
+    .on("data", (car) => {
+      const carPrice = parseNumber(car.price);
+      const carMileage = parseNumber(car.mileage);
+      const carTransmission = car.transmission?.toLowerCase() || "";
+      const carFuel = car.fuelType?.toLowerCase() || "";
+      const carTax = parseNumber(car.tax);
+      const carMpg = parseNumber(car.mpg);
+      const carEngineSize = parseNumber(car.engineSize);
 
-      // Log the car data to see what we're working with
-      console.log(`Checking car: ${data.model}, Price: ${carPrice}, Mileage: ${carMileage}`);
+      const matchesTransmission = !transmissionFilter || carTransmission.includes(transmissionFilter);
+      const matchesFuel = !fuelFilter || carFuel.includes(fuelFilter);
+      const matchesPrice = isNaN(maxPrice) || carPrice <= maxPrice;
+      const matchesMileage = isNaN(maxMileage) || carMileage <= maxMileage;
+      const matchesTax = isNaN(maxTax) || carTax <= maxTax;
+      const matchesMpg = isNaN(minMpg) || carMpg >= minMpg;
+      const matchesEngineSize = isNaN(maxEngineSize) || carEngineSize <= maxEngineSize;
 
-      const maxPrice = parsePrice(price);
-      const maxMileage = parseMileage(mileage);
-
-      // Apply filters
-      if (
-        (transmission && !data.transmission.toLowerCase().includes(transmission.toLowerCase())) || 
-        (fuel && !data.fuelType.toLowerCase().includes(fuel.toLowerCase())) ||
-        (price && carPrice > maxPrice) || 
-        (mileage && carMileage > maxMileage)
-      ) {
-        console.log('Car filtered out');
-        return;
+      if (matchesTransmission && matchesFuel && matchesPrice && matchesMileage && matchesTax && matchesMpg && matchesEngineSize) {
+        results.push(car);
       }
-
-      console.log('Car added to results');
-      results.push(data); // Add the car to the results if it passes all filters
     })
     .on("end", () => {
-      console.log(`Found ${results.length} cars matching the filters`);
-      res.json(results); // Return the filtered results
+      res.json(results);
     })
     .on("error", (err) => {
       console.error("CSV Read Error:", err);
@@ -79,3 +69,4 @@ app.get("/cars", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+ 
