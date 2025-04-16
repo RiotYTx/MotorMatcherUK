@@ -18,7 +18,7 @@
         <option value="audi">Audi</option>
         <option value="bmw">BMW</option>
         <option value="ford">Ford</option>
-        <option value="hyundai">Hyundai</option>
+        <option value="hyundi">Hyundai</option>
         <option value="merc">Mercedes</option>
         <option value="skoda">Skoda</option>
         <option value="toyota">Toyota</option>
@@ -31,69 +31,80 @@
     <div class="mb-4">
       <label for="transmission" class="block mb-1">Transmission Type</label>
       <select id="transmission" class="w-full border p-2 rounded">
-        <option value="">-- Choose --</option>
+        <option value="">-- Any --</option>
         <option value="manual">Manual</option>
         <option value="automatic">Automatic</option>
-        <option value="semi automatic">Semi Automatic</option>
+        <option value="semi automatic">Semi-Automatic</option>
       </select>
     </div>
 
+    <!-- Fuel Filter -->
+    <div class="mb-4">
+      <label for="fuel" class="block mb-1">Fuel Type</label>
+      <select id="fuel" class="w-full border p-2 rounded">
+        <option value="">-- Any --</option>
+        <option value="petrol">Petrol</option>
+        <option value="diesel">Diesel</option>
+        <option value="electric">Electric</option>
+        <option value="hybrid">Hybrid</option>
+      </select>
+    </div>
 
     <!-- Price Filter -->
     <div class="mb-4">
-      <label for="price" class="block mb-1">Max Price (£)</label>
-      <input type="number" id="price" class="w-full border p-2 rounded" placeholder="Enter max price" />
+      <label for="price" class="block mb-1">Maximum Price (£)</label>
+      <input type="number" id="price" class="w-full border p-2 rounded" placeholder="e.g. 10000" />
     </div>
 
     <!-- Mileage Filter -->
     <div class="mb-4">
-      <label for="mileage" class="block mb-1">Max Mileage (miles)</label>
-      <input type="number" id="mileage" class="w-full border p-2 rounded" placeholder="Enter max mileage" />
+      <label for="mileage" class="block mb-1">Maximum Mileage</label>
+      <input type="number" id="mileage" class="w-full border p-2 rounded" placeholder="e.g. 60000" />
     </div>
 
-    <!-- Find Car Button -->
-    <button onclick="findMyCar()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full">
-      Find My Car
-    </button>
+    <!-- Buttons -->
+    <div class="flex gap-4 mt-4">
+      <button onclick="findMyCar()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full">
+        Find My Car
+      </button>
+      <button onclick="resetFilters()" class="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded w-full">
+        Reset Filters
+      </button>
+    </div>
 
-    <!-- Results Section -->
+    <!-- Results -->
     <div id="results" class="mt-6 space-y-4"></div>
   </div>
 
   <script>
     function findMyCar() {
-      // Get values from filters
       const model = document.getElementById("model").value;
       const transmission = document.getElementById("transmission").value;
+      const fuel = document.getElementById("fuel").value;
       const price = document.getElementById("price").value;
       const mileage = document.getElementById("mileage").value;
 
-      // Ensure the brand is selected
       if (!model) return alert("Please select a brand");
 
-      // Build the query string with selected filters
-      let url = `/cars?model=${model}`;
+      const query = new URLSearchParams({
+        model,
+        ...(transmission && { transmission }),
+        ...(fuel && { fuel }),
+        ...(price && { price }),
+        ...(mileage && { mileage }),
+      });
 
-      if (transmission) url += `&transmission=${transmission}`;
-      if (price) url += `&price=${price}`;
-      if (mileage) url += `&mileage=${mileage}`;
-
-      console.log('Request URL:', url); // Log the URL being requested for debugging
-
-      // Fetch cars from the backend
-      fetch(url)
-        .then((res) => res.json())
-        .then((data) => {
+      fetch(`/cars?${query}`)
+        .then(res => res.json())
+        .then(data => {
           const results = document.getElementById("results");
-
           if (data.length === 0) {
             results.innerHTML = "<p>No cars found.</p>";
           } else {
-            // Display the filtered car results
             results.innerHTML = data.map(car => `
               <div class="border p-4 rounded bg-gray-100">
                 <strong>${car.model}</strong> - £${car.price}<br/>
-                ${car.year} | ${car.transmission} | ${car.fuel} | ${car.mileage} miles
+                ${car.year} | ${car.transmission} | ${car.fuelType} | ${car.mileage} miles
               </div>
             `).join("");
           }
@@ -103,6 +114,17 @@
           document.getElementById("results").innerHTML = "<p class='text-red-500'>Error loading cars.</p>";
         });
     }
+
+    function resetFilters() {
+      document.getElementById("model").value = "";
+      document.getElementById("transmission").value = "";
+      document.getElementById("fuel").value = "";
+      document.getElementById("price").value = "";
+      document.getElementById("mileage").value = "";
+      document.getElementById("results").innerHTML = "";
+    }
   </script>
 </body>
 </html>
+
+

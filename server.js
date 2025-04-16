@@ -23,6 +23,7 @@ const parseMileage = (mileage) => {
 app.get("/cars", async (req, res) => {
   const brand = req.query.model;
   const transmission = req.query.transmission;
+  const fuel = req.query.fuel;
   const price = req.query.price;
   const mileage = req.query.mileage;
 
@@ -53,12 +54,13 @@ app.get("/cars", async (req, res) => {
 
       // Apply filters
       if (
-        (transmission && !data.transmission.toLowerCase().includes(transmission.toLowerCase())) || // Case-insensitive partial matching for transmission type
-        (price && carPrice > maxPrice) || // Check if car's price is greater than max price
-        (mileage && carMileage > maxMileage) // Check if car's mileage is greater than max mileage
+        (transmission && !data.transmission.toLowerCase().includes(transmission.toLowerCase())) || 
+        (fuel && !data.fuelType.toLowerCase().includes(fuel.toLowerCase())) ||
+        (price && carPrice > maxPrice) || 
+        (mileage && carMileage > maxMileage)
       ) {
         console.log('Car filtered out');
-        return; // Skip this car if it doesn't match
+        return;
       }
 
       console.log('Car added to results');
