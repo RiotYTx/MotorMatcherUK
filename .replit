@@ -16,3 +16,15 @@ ignorePorts = false
 [[ports]]
 localPort = 3000
 externalPort = 80
+
+[workflows]
+runButton = "Run server"
+
+[[workflows.workflow]]
+name = "Run server"
+author = 41256440
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node server.js"
