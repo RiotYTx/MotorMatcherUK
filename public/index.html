@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MotormatcherUK</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl">
+    <h1 class="text-2xl font-bold mb-6">Find Your Perfect Car</h1>
+
+    <!-- Brand Filter -->
+    <div class="mb-4">
+      <label for="model" class="block mb-1">Select Brand</label>
+      <select id="model" class="w-full border p-2 rounded">
+        <option value="">-- Choose --</option>
+        <option value="audi">Audi</option>
+        <option value="bmw">BMW</option>
+        <option value="ford">Ford</option>
+        <option value="hyundi">Hyundai</option>
+        <option value="merc">Mercedes</option>
+        <option value="skoda">Skoda</option>
+        <option value="toyota">Toyota</option>
+        <option value="vauxhall">Vauxhall</option>
+        <option value="vw">Volkswagen</option>
+      </select>
+    </div>
+
+    <button onclick="findMyCar()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full">
+      Find My Car
+    </button>
+
+    <div id="results" class="mt-6 space-y-4"></div>
+  </div>
+
+  <script>
+    function findMyCar() {
+      const model = document.getElementById("model").value;
+      if (!model) return alert("Please select a brand");
+
+      fetch(`/cars?model=${model}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const results = document.getElementById("results");
+          if (data.length === 0) {
+            results.innerHTML = "<p>No cars found.</p>";
+          } else {
+            results.innerHTML = data.map(car => `
+              <div class="border p-4 rounded bg-gray-100">
+                <strong>${car.model}</strong> - £${car.price}<br/>
+                ${car.year} | ${car.transmission} | ${car.fuel} | ${car.mileage} miles
+              </div>
+            `).join("");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById("results").innerHTML = "<p class='text-red-500'>Error loading cars.</p>";
+        });
+    }
+  </script>
+</body>
+</html>
