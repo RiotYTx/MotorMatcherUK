@@ -6,85 +6,93 @@
   <title>MotormatcherUK</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-blue-100 flex items-center justify-center min-h-screen">
-  <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl">
-    <h1 class="text-2xl font-bold mb-6">Find Your Perfect Car</h1>
+<body class="bg-gradient-to-br from-blue-100 to-blue-200 min-h-screen flex items-center justify-center px-4">
+  <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-2xl transition-all duration-300 ease-in-out">
+    <h1 class="text-3xl font-bold mb-6 text-center text-blue-700">🚘 Find Your Perfect Car</h1>
 
-    <!-- Brand Filter -->
-    <div class="mb-4">
-      <label for="brandInput" class="block mb-1">Select Brand (optional)</label>
-      <select id="brandInput" class="w-full border p-2 rounded">
-        <option value="any">-- Any --</option>
-        <option value="audi">Audi</option>
-        <option value="bmw">BMW</option>
-        <option value="ford">Ford</option>
-        <option value="hyundi">Hyundai</option>
-        <option value="merc">Mercedes</option>
-        <option value="skoda">Skoda</option>
-        <option value="toyota">Toyota</option>
-        <option value="vauxhall">Vauxhall</option>
-        <option value="vw">Volkswagen</option>
-      </select>
+    <!-- Form Container -->
+    <div id="filtersForm" class="space-y-4">
+
+      <!-- Brand Filter -->
+      <div>
+        <label for="brandInput" class="block text-sm font-semibold text-gray-700">Select Brand (optional)</label>
+        <select id="brandInput" class="w-full border p-2 rounded">
+          <option value="any">-- Any --</option>
+          <option value="audi">Audi</option>
+          <option value="bmw">BMW</option>
+          <option value="ford">Ford</option>
+          <option value="hyundi">Hyundai</option>
+          <option value="merc">Mercedes</option>
+          <option value="skoda">Skoda</option>
+          <option value="toyota">Toyota</option>
+          <option value="vauxhall">Vauxhall</option>
+          <option value="vw">Volkswagen</option>
+        </select>
+      </div>
+
+      <!-- Transmission Filter -->
+      <div>
+        <label for="transmissionInput" class="block text-sm font-semibold text-gray-700">Transmission Type</label>
+        <select id="transmissionInput" class="w-full border p-2 rounded">
+          <option value="">-- Any --</option>
+          <option value="manual">Manual</option>
+          <option value="automatic">Automatic</option>
+          <option value="semi automatic">Semi-Automatic</option>
+        </select>
+      </div>
+
+      <!-- Fuel Filter -->
+      <div>
+        <label for="fuelInput" class="block text-sm font-semibold text-gray-700">Fuel Type</label>
+        <select id="fuelInput" class="w-full border p-2 rounded">
+          <option value="">-- Any --</option>
+          <option value="petrol">Petrol</option>
+          <option value="diesel">Diesel</option>
+          <option value="electric">Electric</option>
+          <option value="hybrid">Hybrid</option>
+        </select>
+      </div>
+
+      <!-- Price Filter -->
+      <div>
+        <label for="priceInput" class="block text-sm font-semibold text-gray-700">Maximum Price (£)</label>
+        <input type="number" id="priceInput" class="w-full border p-2 rounded" placeholder="e.g. 10000" />
+      </div>
+
+      <!-- Mileage Filter -->
+      <div>
+        <label for="mileageInput" class="block text-sm font-semibold text-gray-700">Maximum Mileage</label>
+        <input type="number" id="mileageInput" class="w-full border p-2 rounded" placeholder="e.g. 60000" />
+      </div>
+
+      <!-- MPG Filter -->
+      <div>
+        <label for="mpgInput" class="block text-sm font-semibold text-gray-700">Minimum MPG</label>
+        <input type="number" id="mpgInput" class="w-full border p-2 rounded" placeholder="e.g. 30" />
+      </div>
+
+      <!-- Engine Size Filter -->
+      <div>
+        <label for="engineSizeInput" class="block text-sm font-semibold text-gray-700">Maximum Engine Size (L)</label>
+        <input type="number" step="0.1" id="engineSizeInput" class="w-full border p-2 rounded" placeholder="e.g. 2.0" />
+      </div>
     </div>
 
-    <!-- Transmission Filter -->
-    <div class="mb-4">
-      <label for="transmissionInput" class="block mb-1">Transmission Type</label>
-      <select id="transmissionInput" class="w-full border p-2 rounded">
-        <option value="">-- Any --</option>
-        <option value="manual">Manual</option>
-        <option value="automatic">Automatic</option>
-        <option value="semi automatic">Semi-Automatic</option>
-      </select>
+    <!-- Buttons -->
+    <div class="flex gap-4 mt-6">
+      <button id="predictBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition">
+        🔍 Find My Car
+      </button>
+      <button onclick="resetForm()" class="flex-1 bg-gray-400 hover:bg-gray-500 text-white py-2 rounded-lg font-semibold transition">
+        ♻️ Reset Filters
+      </button>
     </div>
-
-    <!-- Fuel Filter -->
-    <div class="mb-4">
-      <label for="fuelInput" class="block mb-1">Fuel Type</label>
-      <select id="fuelInput" class="w-full border p-2 rounded">
-        <option value="">-- Any --</option>
-        <option value="petrol">Petrol</option>
-        <option value="diesel">Diesel</option>
-        <option value="electric">Electric</option>
-        <option value="hybrid">Hybrid</option>
-      </select>
-    </div>
-
-    <!-- Price Filter -->
-    <div class="mb-4">
-      <label for="priceInput" class="block mb-1">Maximum Price (£)</label>
-      <input type="number" id="priceInput" class="w-full border p-2 rounded" placeholder="e.g. 10000" />
-    </div>
-
-    <!-- Mileage Filter -->
-    <div class="mb-4">
-      <label for="mileageInput" class="block mb-1">Maximum Mileage</label>
-      <input type="number" id="mileageInput" class="w-full border p-2 rounded" placeholder="e.g. 60000" />
-    </div>
-
-    <!-- MPG Filter -->
-    <div class="mb-4">
-      <label for="mpgInput" class="block mb-1">Minimum MPG</label>
-      <input type="number" id="mpgInput" class="w-full border p-2 rounded" placeholder="e.g. 30" />
-    </div>
-    
-    <!-- Engine Size Filter -->
-    <div class="mb-4">
-      <label for="engineSizeInput" class="block mb-1">Maximum Engine Size (L)</label>
-      <input type="number" id="engineSizeInput" class="w-full border p-2 rounded" placeholder="e.g. 2.0" />
-    </div>
-
-
-    <!-- Predict Button -->
-    <button id="predictBtn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full">
-      Find My Car
-    </button>
 
     <!-- Result -->
-    <div id="predictionResult" class="mt-6 text-lg font-semibold text-green-700"></div>
+    <div id="predictionResult" class="mt-6 text-lg font-semibold text-center text-green-700"></div>
   </div>
 
-  <!-- JS for Prediction -->
+  <!-- JS -->
   <script>
     document.getElementById("predictBtn").addEventListener("click", async () => {
       const brand = document.getElementById("brandInput").value || "any";
@@ -97,18 +105,30 @@
 
       const url = `/predict?brand=${brand}&price=${price}&fuel=${fuel}&transmission=${transmission}&mileage=${mileage}&mpg=${mpg}&engineSize=${engineSize}`;
 
+      const resultEl = document.getElementById("predictionResult");
+
       try {
+        resultEl.textContent = "⏳ Predicting...";
         const res = await fetch(url);
         const data = await res.json();
-        document.getElementById("predictionResult").innerText =
-          "Recommended Model: " + data.predictedModel;
+
+        if (data.predictedModel && data.predictedModel !== "undefined") {
+          resultEl.textContent = "✅ Recommended Model: " + data.predictedModel;
+        } else {
+          resultEl.textContent = "❌ No suitable model found. Try adjusting filters.";
+        }
       } catch (err) {
         console.error(err);
-        document.getElementById("predictionResult").innerText =
-          "❌ Something went wrong. Please try again.";
+        resultEl.textContent = "❌ Something went wrong. Please try again.";
       }
     });
 
+    function resetForm() {
+      const inputs = document.querySelectorAll("#filtersForm input, #filtersForm select");
+      inputs.forEach(el => el.value = "");
+      document.getElementById("predictionResult").textContent = "";
+    }
   </script>
 </body>
 </html>
+
