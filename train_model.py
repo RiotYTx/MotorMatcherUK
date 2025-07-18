@@ -19,16 +19,16 @@ if "tax(£)" in df.columns:
 
 df = df.dropna()
 
-    # Normalize text columns to lowercase
-    df["fuelType"] = df["fuelType"].str.lower()
-    df["transmission"] = df["transmission"].str.lower()
+# Normalize text columns to lowercase
+df["fuelType"] = df["fuelType"].str.lower()
+df["transmission"] = df["transmission"].str.lower()
 
-    # Encode fuel and transmission
-    encoders = {}
-    for col in ["fuelType", "transmission"]:
-        le = LabelEncoder()
-        df[col] = le.fit_transform(df[col])
-        encoders[col] = le
+# Encode fuel and transmission
+encoders = {}
+for col in ["fuelType", "transmission"]:
+    le = LabelEncoder()
+    df[col] = le.fit_transform(df[col])
+    encoders[col] = le
 
 
 # Encode model name
