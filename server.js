@@ -18,17 +18,18 @@ app.get("/predict", (req, res) => {
   }
 
 exec(command, (error, stdout, stderr) => {
-  console.log("Running command:", command);
-  console.log("stdout:", stdout);
-  console.log("stderr:", stderr);
+    console.log("Running command:", command);
+    console.log("stdout:", stdout);
+    console.log("stderr:", stderr);
 
-  if (error) {
-    console.error("Prediction error:", stderr);
-    return res.status(500).json({ error: "Prediction failed." });
-  }
+    if (error) {
+      console.error("Prediction error:", stderr);
+      return res.status(500).json({ error: "Prediction failed." });
+    }
 
-  const prediction = stdout.trim();
-  res.json({ predictedModel: prediction });
+    const prediction = stdout.trim();
+    res.json({ predictedModel: prediction });
+  });
 });
 
 
