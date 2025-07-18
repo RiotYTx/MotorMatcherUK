@@ -12,7 +12,8 @@ app.get("/predict", (req, res) => {
   const { price, fuel, transmission, mileage, mpg, engineSize } = req.query;
 
   // Default fallback values if not provided
-  const command = `/home/runner/workspace/.pythonlibs/bin/python3 predict_model_with_brand_fixed.py price=${price || 15000} fuel=${fuel || "petrol"} transmission=${transmission || "manual"} mileage=${mileage || 30000} mpg=${mpg || 50} engineSize=${engineSize || 1.6}`;
+  const command = `python3 predict_model_with_brand_fixed.py price=${price || 15000} fuel=${fuel || "petrol"} transmission=${transmission || "manual"} mileage=${mileage || 30000} mpg=${mpg || 50} engineSize=${engineSize || 1.6}`;
+
 
 exec(command, (error, stdout, stderr) => {
   console.log("Running command:", command);
