@@ -24,8 +24,7 @@ exec(command, (error, stdout, stderr) => {
       return res.status(500).json({ error: "Prediction failed." });
     }
 
-  }
-  const prediction = stdout.trim();
+    const prediction = stdout.trim();
   
   if (!prediction) {
     console.warn("No prediction returned.");
