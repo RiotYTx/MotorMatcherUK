@@ -12,9 +12,9 @@
 
     <!-- Brand Filter -->
     <div class="mb-4">
-      <label for="model" class="block mb-1">Select Brand</label>
-      <select id="model" class="w-full border p-2 rounded">
-        <option value="">-- Choose --</option>
+      <label for="brandInput" class="block mb-1">Select Brand (optional)</label>
+      <select id="brandInput" class="w-full border p-2 rounded">
+        <option value="any">-- Any --</option>
         <option value="audi">Audi</option>
         <option value="bmw">BMW</option>
         <option value="ford">Ford</option>
@@ -29,8 +29,8 @@
 
     <!-- Transmission Filter -->
     <div class="mb-4">
-      <label for="transmission" class="block mb-1">Transmission Type</label>
-      <select id="transmission" class="w-full border p-2 rounded">
+      <label for="transmissionInput" class="block mb-1">Transmission Type</label>
+      <select id="transmissionInput" class="w-full border p-2 rounded">
         <option value="">-- Any --</option>
         <option value="manual">Manual</option>
         <option value="automatic">Automatic</option>
@@ -40,8 +40,8 @@
 
     <!-- Fuel Filter -->
     <div class="mb-4">
-      <label for="fuel" class="block mb-1">Fuel Type</label>
-      <select id="fuel" class="w-full border p-2 rounded">
+      <label for="fuelInput" class="block mb-1">Fuel Type</label>
+      <select id="fuelInput" class="w-full border p-2 rounded">
         <option value="">-- Any --</option>
         <option value="petrol">Petrol</option>
         <option value="diesel">Diesel</option>
@@ -52,108 +52,54 @@
 
     <!-- Price Filter -->
     <div class="mb-4">
-      <label for="price" class="block mb-1">Maximum Price (£)</label>
-      <input type="number" id="price" class="w-full border p-2 rounded" placeholder="e.g. 10000" />
+      <label for="priceInput" class="block mb-1">Maximum Price (£)</label>
+      <input type="number" id="priceInput" class="w-full border p-2 rounded" placeholder="e.g. 10000" />
     </div>
 
     <!-- Mileage Filter -->
     <div class="mb-4">
-      <label for="mileage" class="block mb-1">Maximum Mileage</label>
-      <input type="number" id="mileage" class="w-full border p-2 rounded" placeholder="e.g. 60000" />
-    </div>
-
-    <!-- Tax Filter -->
-    <div class="mb-4">
-      <label for="tax" class="block mb-1">Maximum Tax (£)</label>
-      <input type="number" id="tax" class="w-full border p-2 rounded" placeholder="e.g. 300" />
+      <label for="mileageInput" class="block mb-1">Maximum Mileage</label>
+      <input type="number" id="mileageInput" class="w-full border p-2 rounded" placeholder="e.g. 60000" />
     </div>
 
     <!-- MPG Filter -->
     <div class="mb-4">
-      <label for="mpg" class="block mb-1">Minimum MPG</label>
-      <input type="number" id="mpg" class="w-full border p-2 rounded" placeholder="e.g. 30" />
+      <label for="mpgInput" class="block mb-1">Minimum MPG</label>
+      <input type="number" id="mpgInput" class="w-full border p-2 rounded" placeholder="e.g. 30" />
     </div>
 
-    <!-- Engine Size Filter -->
-    <div class="mb-4">
-      <label for="engineSize" class="block mb-1">Maximum Engine Size (L)</label>
-      <input type="number" id="engineSize" class="w-full border p-2 rounded" placeholder="e.g. 3" />
-    </div>
+    <!-- Predict Button -->
+    <button id="predictBtn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full">
+      Find My Car
+    </button>
 
-    <!-- Buttons -->
-    <div class="flex gap-4 mt-4">
-      <button onclick="findMyCar()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full">
-        Find My Car
-      </button>
-      <button onclick="resetFilters()" class="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded w-full">
-        Reset Filters
-      </button>
-    </div>
-
-    <!-- Results -->
-    <div id="results" class="mt-6 space-y-4"></div>
+    <!-- Result -->
+    <div id="predictionResult" class="mt-6 text-lg font-semibold text-green-700"></div>
   </div>
 
+  <!-- JS for Prediction -->
   <script>
-    const findMyCar = () => {
-      const model = document.getElementById("model").value;
-      const transmission = document.getElementById("transmission").value;
-      const fuel = document.getElementById("fuel").value;
-      const price = document.getElementById("price").value;
-      const mileage = document.getElementById("mileage").value;
-      const tax = document.getElementById("tax").value;
-      const mpg = document.getElementById("mpg").value;
-      const engineSize = document.getElementById("engineSize").value;
+    document.getElementById("predictBtn").addEventListener("click", async () => {
+      const brand = document.getElementById("brandInput").value || "any";
+      const price = document.getElementById("priceInput").value || 15000;
+      const fuel = document.getElementById("fuelInput").value || "petrol";
+      const transmission = document.getElementById("transmissionInput").value || "manual";
+      const mileage = document.getElementById("mileageInput").value || 30000;
+      const mpg = document.getElementById("mpgInput").value || 55;
 
-      if (!model) return alert("Please select a brand");
+      const url = `/predict?brand=${brand}&price=${price}&fuel=${fuel}&transmission=${transmission}&mileage=${mileage}&mpg=${mpg}`;
 
-      const query = new URLSearchParams({
-        model,
-        ...(transmission && { transmission }),
-        ...(fuel && { fuel }),
-        ...(price && { price: parseFloat(price) }),
-        ...(mileage && { mileage: parseFloat(mileage) }),
-        ...(tax && { tax: parseFloat(tax) }),
-        ...(mpg && { mpg: parseFloat(mpg) }),
-        ...(engineSize && { engineSize: parseFloat(engineSize) }),
-      });
-
-      fetch(`/cars?${query}`)
-        .then(res => res.json())
-        .then(data => {
-          const results = document.getElementById("results");
-          if (data.length === 0) {
-            results.innerHTML = "<p>No cars found.</p>";
-          } else {
-            results.innerHTML = data.map(car => `
-              <div class="border p-4 rounded bg-gray-100">
-                <strong>${car.model}</strong> - £${car.price}<br/>
-                ${car.year} | ${car.transmission} | ${car.fuelType} | ${car.mileage} miles | £${car.tax} tax | ${car.mpg} MPG | ${car.engineSize}L
-              </div>
-            `).join("");
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          document.getElementById("results").innerHTML = "<p class='text-red-500'>Error loading cars.</p>";
-        });
-    }
-
-    const resetFilters = () => {
-      document.getElementById("model").value = "";
-      document.getElementById("transmission").value = "";
-      document.getElementById("fuel").value = "";
-      document.getElementById("price").value = "";
-      document.getElementById("mileage").value = "";
-      document.getElementById("tax").value = "";
-      document.getElementById("mpg").value = "";
-      document.getElementById("engineSize").value = "";
-      document.getElementById("results").innerHTML = "";
-    }
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        document.getElementById("predictionResult").innerText =
+          "Recommended Model: " + data.predictedModel;
+      } catch (err) {
+        console.error(err);
+        document.getElementById("predictionResult").innerText =
+          "❌ Something went wrong. Please try again.";
+      }
+    });
   </script>
 </body>
 </html>
-
-
-
-
