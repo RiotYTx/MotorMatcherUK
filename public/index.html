@@ -67,6 +67,13 @@
       <label for="mpgInput" class="block mb-1">Minimum MPG</label>
       <input type="number" id="mpgInput" class="w-full border p-2 rounded" placeholder="e.g. 30" />
     </div>
+    
+    <!-- Engine Size Filter -->
+    <div class="mb-4">
+      <label for="engineSizeInput" class="block mb-1">Maximum Engine Size (L)</label>
+      <input type="number" id="engineSizeInput" class="w-full border p-2 rounded" placeholder="e.g. 2.0" />
+    </div>
+
 
     <!-- Predict Button -->
     <button id="predictBtn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full">
@@ -86,8 +93,9 @@
       const transmission = document.getElementById("transmissionInput").value || "manual";
       const mileage = document.getElementById("mileageInput").value || 30000;
       const mpg = document.getElementById("mpgInput").value || 55;
+      const engineSize = document.getElementById("engineSizeInput").value || 1.6;
 
-      const url = `/predict?brand=${brand}&price=${price}&fuel=${fuel}&transmission=${transmission}&mileage=${mileage}&mpg=${mpg}`;
+      const url = `/predict?brand=${brand}&price=${price}&fuel=${fuel}&transmission=${transmission}&mileage=${mileage}&mpg=${mpg}&engineSize=${engineSize}`;
 
       try {
         const res = await fetch(url);
@@ -100,6 +108,7 @@
           "❌ Something went wrong. Please try again.";
       }
     });
+
   </script>
 </body>
 </html>
