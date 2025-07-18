@@ -19,8 +19,8 @@ mileage = float(args.get("mileage", 30000))
 mpg = float(args.get("mpg", 50))
 engine = float(args.get("engineSize", 1.6))
 
-print("Received args:", args)
-print("Parsed:", price, fuel, trans, mileage, mpg, engine)
+#print("Received args:", args)
+#print("Parsed:", price, fuel, trans, mileage, mpg, engine)
 
 # Encode
 try:
@@ -30,7 +30,7 @@ except Exception as e:
     print("Encoding error:", e)
     sys.exit(1)
 
-print("Encoded inputs:", fuel_encoded, trans_encoded)
+#print("Encoded inputs:", fuel_encoded, trans_encoded)
 
 # Predict
 input_data = [[price, fuel_encoded, trans_encoded, mileage, mpg, engine]]
