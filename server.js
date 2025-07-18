@@ -32,7 +32,7 @@ exec(command, (error, stdout, stderr) => {
 
   res.json({ predictedModel: prediction });
 });
-
+});
 
 // Start server
 app.listen(port, () => {
