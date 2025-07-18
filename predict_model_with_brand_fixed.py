@@ -1,10 +1,15 @@
 import sys
 import joblib
 
-# Load model and encoders
-model = joblib.load("car_model.pkl")
-encoders = joblib.load("feature_encoders.pkl")
-target_encoder = joblib.load("target_encoder.pkl")
+# Load model and encoders with error handling
+try:
+    model = joblib.load("car_model.pkl")
+    encoders = joblib.load("feature_encoders.pkl")
+    target_encoder = joblib.load("target_encoder.pkl")
+except Exception as e:
+    print(f"Error loading model files: {e}")
+    print("The model files may be incompatible with the current scikit-learn version.")
+    sys.exit(1)
 
 # Parse command-line arguments
 args = dict(arg.split("=") for arg in sys.argv[1:])
