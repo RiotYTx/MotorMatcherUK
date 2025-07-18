@@ -5,7 +5,7 @@ const app = require("./server");
 
 // Test CSV brand name
 const TEST_BRAND = "TestBrand";
-const TEST_CSV_PATH = path.join(__dirname, "..", "car_data", `${TEST_BRAND}.csv`);
+const TEST_CSV_PATH = path.join(__dirname, "car_data", `${TEST_BRAND}.csv`);
 
 beforeAll(() => {
   const csvData = `price,mileage,transmission,fuelType,tax,mpg,engineSize
