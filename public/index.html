@@ -95,7 +95,7 @@
   <!-- JS -->
   <script>
     document.getElementById("predictBtn").addEventListener("click", async () => {
-      const brand = document.getElementById("brandInput").value || "any";
+      const brand = (document.getElementById("brandInput").value || "any").toLowerCase();
       const price = document.getElementById("priceInput").value || 15000;
       const fuel = document.getElementById("fuelInput").value || "petrol";
       const transmission = document.getElementById("transmissionInput").value || "manual";
